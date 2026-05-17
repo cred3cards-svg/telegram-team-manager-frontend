@@ -110,6 +110,7 @@ export default function Inbox({ project }) {
           message_text: latestMessage,
           chat_history: history,
           chat_type: selectedChat?.type || "dm",
+          chat_name: selectedChat?.chat_name || "",
           project_context: project.context || "",
           tone: project.tone || "casual",
           message_id: messageId,
