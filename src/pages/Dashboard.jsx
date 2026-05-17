@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../api";
+import DiscoveryPanel from "../components/DiscoveryPanel";
 
 export default function Dashboard({ project, onProjectChange }) {
   const [projects, setProjects] = useState([]);
@@ -123,6 +124,11 @@ export default function Dashboard({ project, onProjectChange }) {
             setAwayLog((prev) => prev.map((l) => ({ ...l, reviewed: 1 })));
           }}
         />
+      )}
+
+      {/* Group Discovery */}
+      {project && accounts.length > 0 && (
+        <DiscoveryPanel accounts={accounts} />
       )}
 
       {/* Edit Project */}

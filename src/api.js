@@ -71,6 +71,14 @@ export const api = {
   getPersona: (account_id) => req("GET", `/accounts/${account_id}/persona`),
   updatePersona: (account_id, personality, job_description) =>
     req("PUT", `/accounts/${account_id}/persona`, { personality, job_description }),
+
+  // Group Discovery
+  getSuggestedGroups: (category = "all") =>
+    req("GET", `/discovery/suggested?category=${category}&limit=100`),
+  joinSuggestedGroup: (account_id, group_id) =>
+    req("POST", "/discovery/join", { account_id, group_id }),
+  runDiscoveryNow: (account_id) =>
+    req("POST", `/discovery/run-now?account_id=${account_id}`),
 };
 
 export function createWebSocket(project_id, onMessage) {
