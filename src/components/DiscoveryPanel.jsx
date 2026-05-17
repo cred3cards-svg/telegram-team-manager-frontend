@@ -12,7 +12,7 @@ const CAT_COLORS = {
   general:  "bg-slate-500/20 text-slate-300",
 };
 
-export default function DiscoveryPanel({ accounts }) {
+export default function DiscoveryPanel({ accounts = [] }) {
   const [groups, setGroups] = useState([]);
   const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(false);
@@ -20,6 +20,7 @@ export default function DiscoveryPanel({ accounts }) {
   const [joining, setJoining] = useState({});   // group_id -> bool
   const [joined, setJoined] = useState({});     // group_id -> bool
   const [selectedAccount, setSelectedAccount] = useState(accounts[0]?.id || null);
+  const hasAccounts = accounts.length > 0;
 
   async function loadGroups() {
     setLoading(true);
@@ -85,8 +86,9 @@ export default function DiscoveryPanel({ accounts }) {
           )}
           <button
             onClick={handleScanNow}
-            disabled={scanning}
-            className="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg transition-colors"
+            disabled={scanning || !hasAccounts}
+            title={!hasAccounts ? "Add an account first to scan" : ""}
+            className="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-lg transition-colors"
           >
             {scanning ? "Scanning..." : "Scan Now"}
           </button>
@@ -119,47 +121,56 @@ export default function DiscoveryPanel({ accounts }) {
           <p className="text-xs text-slate-600">Click "Scan Now" to start — runs automatically every 6 hours.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 max-h-[480px] overflow-y-auto pr-1">
-          {groups.map((g) => (
-            <div
-              key={g.group_id}
-              className="flex items-center justify-between gap-3 bg-slate-900 rounded-xl px-4 py-3 border border-slate-700/50"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-sm font-medium text-slate-100 truncate">{g.name}</span>
-                  <span className={`flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded capitalize ${CAT_COLORS[g.category] || CAT_COLORS.general}`}>
-                    {g.category}
-                  </span>
-                </div>
-                {g.description && (
-                  <p className="text-xs text-slate-500 truncate mb-1">{g.description}</p>
-                )}
-                <div className="flex items-center gap-3 text-[10px] text-slate-500">
-                  <span>👥 {g.members?.toLocaleString()} members</span>
-                  {g.online_members > 0 && (
-                    <span className="text-green-400">🟢 {g.online_members?.toLocaleString()} online</span>
-                  )}
-                  {g.username && (
-                    <span className="text-slate-600">@{g.username}</span>
-                  )}
-                </div>
-              </div>
-
-              <button
-                onClick={() => handleJoin(g)}
-                disabled={joining[g.group_id] || joined[g.group_id]}
-                className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                  joined[g.group_id]
-                    ? "bg-green-600/20 text-green-400 cursor-default"
-                    : "bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white"
-                }`}
+        <>
+          {!hasAccounts && (
+            <p className="text-xs text-amber-400/80 bg-amber-400/10 rounded-lg px-3 py-2 mb-3">
+              Add an account in the Accounts tab to join groups or trigger a scan.
+              Discovered groups are saved and will appear here automatically.
+            </p>
+          )}
+          <div className="flex flex-col gap-2 max-h-[480px] overflow-y-auto pr-1">
+            {groups.map((g) => (
+              <div
+                key={g.group_id}
+                className="flex items-center justify-between gap-3 bg-slate-900 rounded-xl px-4 py-3 border border-slate-700/50"
               >
-                {joined[g.group_id] ? "Joined ✓" : joining[g.group_id] ? "Joining..." : "Join"}
-              </button>
-            </div>
-          ))}
-        </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-sm font-medium text-slate-100 truncate">{g.name}</span>
+                    <span className={`flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded capitalize ${CAT_COLORS[g.category] || CAT_COLORS.general}`}>
+                      {g.category}
+                    </span>
+                  </div>
+                  {g.description && (
+                    <p className="text-xs text-slate-500 truncate mb-1">{g.description}</p>
+                  )}
+                  <div className="flex items-center gap-3 text-[10px] text-slate-500">
+                    <span>👥 {g.members?.toLocaleString()} members</span>
+                    {g.online_members > 0 && (
+                      <span className="text-green-400">🟢 {g.online_members?.toLocaleString()} online</span>
+                    )}
+                    {g.username && (
+                      <span className="text-slate-600">@{g.username}</span>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleJoin(g)}
+                  disabled={joining[g.group_id] || joined[g.group_id] || !hasAccounts}
+                  title={!hasAccounts ? "Add an account to join" : ""}
+                  className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                    joined[g.group_id]
+                      ? "bg-green-600/20 text-green-400 cursor-default"
+                      : "bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white"
+                  }`}
+                >
+                  {joined[g.group_id] ? "Joined ✓" : joining[g.group_id] ? "Joining..." : "Join"}
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

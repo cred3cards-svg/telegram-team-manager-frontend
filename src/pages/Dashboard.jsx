@@ -126,8 +126,8 @@ export default function Dashboard({ project, onProjectChange }) {
         />
       )}
 
-      {/* Group Discovery */}
-      {project && accounts.length > 0 && (
+      {/* Group Discovery — always show when project is active */}
+      {project && (
         <DiscoveryPanel accounts={accounts} />
       )}
 
