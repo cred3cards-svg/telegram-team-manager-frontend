@@ -41,7 +41,7 @@ export const api = {
     req("POST", "/messages/send", { account_id, chat_id, text }),
 
   // Groups
-  listGroups: (account_id) => req("GET", `/groups/list?account_id=${account_id}`),
+  listGroups: (project_id) => req("GET", `/groups/list?project_id=${project_id}`),
   joinGroup: (account_id, group_link) =>
     req("POST", "/groups/join", { account_id, group_link }),
   leaveGroup: (account_id, group_id) =>
