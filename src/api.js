@@ -17,8 +17,8 @@ async function req(method, path, body) {
 export const api = {
   // Projects
   listProjects: () => req("GET", "/projects/list"),
-  createProject: (name, tone, context) =>
-    req("POST", `/projects/create?name=${encodeURIComponent(name)}&tone=${tone}&context=${encodeURIComponent(context)}`),
+  createProject: (name, tone, context, system_prompt = "") =>
+    req("POST", `/projects/create?name=${encodeURIComponent(name)}&tone=${tone}&context=${encodeURIComponent(context)}&system_prompt=${encodeURIComponent(system_prompt)}`),
   updateProject: (id, params) => {
     const qs = new URLSearchParams(params).toString();
     return req("PUT", `/projects/${id}?${qs}`);
@@ -71,6 +71,8 @@ export const api = {
   getPersona: (account_id) => req("GET", `/accounts/${account_id}/persona`),
   updatePersona: (account_id, personality, job_description) =>
     req("PUT", `/accounts/${account_id}/persona`, { personality, job_description }),
+  reassignAccountProject: (account_id, project_id) =>
+    req("PUT", `/accounts/${account_id}/project?project_id=${project_id}`),
 
   // Group Discovery
   getSuggestedGroups: (category = "all") =>

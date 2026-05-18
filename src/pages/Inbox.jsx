@@ -112,6 +112,7 @@ export default function Inbox({ project }) {
           chat_type: selectedChat?.type || "dm",
           chat_name: selectedChat?.chat_name || "",
           project_context: project.context || "",
+          project_system_prompt: project.system_prompt || "",
           tone: project.tone || "casual",
           message_id: messageId,
           account_id: selectedChat?.account_id || null,
